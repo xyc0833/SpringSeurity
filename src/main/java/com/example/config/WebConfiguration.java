@@ -1,6 +1,7 @@
 package com.example.config;
 
 import com.alibaba.fastjson2.support.spring6.http.converter.FastJsonHttpMessageConverter;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScans;
@@ -17,9 +18,11 @@ import java.util.List;
 
 @Configuration
 @EnableWebMvc
-@ComponentScans(
-        @ComponentScan("com.example.controller")
-)
+@ComponentScans({
+        @ComponentScan("com.example.controller"),
+        @ComponentScan("com.example.service")
+})
+@MapperScan("com.example.mapper")
 public class WebConfiguration implements WebMvcConfigurer {
     //我们需要使用ThymeleafViewResolver作为视图解析器，并解析我们的HTML页面
     @Bean

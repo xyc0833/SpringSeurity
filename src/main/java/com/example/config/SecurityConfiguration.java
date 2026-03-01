@@ -1,6 +1,7 @@
 package com.example.config;
 
 import org.apache.ibatis.datasource.pooled.PooledDataSource;
+import org.mybatis.spring.SqlSessionFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,6 +25,7 @@ public class SecurityConfiguration {
     //这里将BCryptPasswordEncoder直接注册为Bean，Security会自动进行选择
     @Bean
     public PasswordEncoder passwordEncoder(){
+        System.out.println(new BCryptPasswordEncoder().encode("password"));
         return new BCryptPasswordEncoder();
     }
 
@@ -35,22 +37,31 @@ public class SecurityConfiguration {
                 "jdbc:mysql://localhost:3306/sql_inventory", "root", "xuyong612");
     }
 
-    //手动创建一个AuthenticationManager用于处理密码校验  用于原密码的校验
-    private AuthenticationManager authenticationManager(UserDetailsManager manager,
-                                                        PasswordEncoder encoder){
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setUserDetailsService(manager);
-        provider.setPasswordEncoder(encoder);
-        return new ProviderManager(provider);
+    //Spring 容器中配置 MyBatis 的 SqlSessionFactory
+    @Bean
+    public SqlSessionFactoryBean sqlSessionFactoryBean(DataSource dataSource) {
+        // 直接参数得到Bean对象
+        SqlSessionFactoryBean bean = new SqlSessionFactoryBean();
+        bean.setDataSource(dataSource);
+        return bean;
     }
 
-    @Bean
-    public UserDetailsManager userDetailsService(DataSource dataSource,
-                                                 PasswordEncoder encoder) throws Exception {
-        JdbcUserDetailsManager manager = new JdbcUserDetailsManager(dataSource);
-        //为UserDetailsManager设置AuthenticationManager即可开启重置密码的时的校验
-        manager.setAuthenticationManager(authenticationManager(manager, encoder));
-        return manager;
-    }
+//    //手动创建一个AuthenticationManager用于处理密码校验  用于原密码的校验
+//    private AuthenticationManager authenticationManager(UserDetailsManager manager,
+//                                                        PasswordEncoder encoder){
+//        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+//        provider.setUserDetailsService(manager);
+//        provider.setPasswordEncoder(encoder);
+//        return new ProviderManager(provider);
+//    }
+//
+//    @Bean
+//    public UserDetailsManager userDetailsService(DataSource dataSource,
+//                                                 PasswordEncoder encoder) throws Exception {
+//        JdbcUserDetailsManager manager = new JdbcUserDetailsManager(dataSource);
+//        //为UserDetailsManager设置AuthenticationManager即可开启重置密码的时的校验
+//        manager.setAuthenticationManager(authenticationManager(manager, encoder));
+//        return manager;
+//    }
 
 }

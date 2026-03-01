@@ -28,22 +28,22 @@ public class HelloController {
 //            return "login";
 //        }
 //    }
-    @Resource
-    UserDetailsManager manager;
+//    @Resource
+//    UserDetailsManager manager;
 
-    @Resource
-    PasswordEncoder encoder;
+//    @Resource
+//    PasswordEncoder encoder;
 
     //修改密码的接口
-    @ResponseBody
-    @PostMapping("/change-password")
-    public JSONObject changePassword(@RequestParam String oldPassword,
-                                     @RequestParam String newPassword) {
-        manager.changePassword(oldPassword, encoder.encode(newPassword));
-        JSONObject object = new JSONObject();
-        object.put("success", true);
-        return object;
-    }
+//    @ResponseBody
+//    @PostMapping("/change-password")
+//    public JSONObject changePassword(@RequestParam String oldPassword,
+//                                     @RequestParam String newPassword) {
+//        manager.changePassword(oldPassword, encoder.encode(newPassword));
+//        JSONObject object = new JSONObject();
+//        object.put("success", true);
+//        return object;
+//    }
 
     //处理首页或是登录界面跳转
     @GetMapping("/")
