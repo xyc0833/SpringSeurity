@@ -72,6 +72,12 @@ public class SecurityConfiguration {
                     //用户名和密码的表单字段名称，不过默认就是这个，可以不配置，除非有特殊需求
 
                 })
+                //以下是退出登录相关配置
+                .logout(conf -> {
+                    conf.logoutUrl("/doLogout");   //退出登录地址，跟上面一样可自定义
+                    conf.logoutSuccessUrl("/login");  //退出登录成功后跳转的地址，这里设置为登录界面
+                    conf.permitAll();
+                })
                 .build();
 
     }

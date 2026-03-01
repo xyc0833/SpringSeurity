@@ -279,10 +279,14 @@
                                             <i class="fas fa-cog"></i> Settings
                                         </a>
                                     </li>
+<!--                                    退出登录修改为button的形式-->
                                     <li>
-                                        <a href="login.html">
-                                            <i class="fas fa-sign-out-alt"></i> logout
-                                        </a>
+                                        <form action="doLogout" method="post">
+                                            <input type="text" th:name="${_csrf.getParameterName()}" th:value="${_csrf.token}" hidden>
+                                            <button type="submit">
+                                                <i class="fas fa-sign-out-alt"></i> logout
+                                            </button>
+                                        </form>
                                     </li>
                                 </ul>
                             </div>
