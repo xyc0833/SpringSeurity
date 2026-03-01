@@ -42,6 +42,7 @@ public class AuthorizeService implements UserDetailsService {
                 // 设置用户密码（⚠️ 注意：数据库中必须存储密文密码，且项目需配置对应的密码编码器）
                 .password(account.getPassword())
                 // 构建 UserDetails 对象（如需添加权限/角色，可在此处链式调用.roles()/.authorities()）
+                .roles(account.getRole())
                 .build();
     }
 }
