@@ -11,15 +11,44 @@
         转账账号：
         <input type="text" id="account"/>
     </label>
+    <!--表单中需要添加csrf的token　写了一个 隐藏的登录框-->
+    <input type="text" th:id="${_csrf.getParameterName()}" th:value="${_csrf.token}" hidden>
     <button onclick="pay()">立即转账</button>
 </div>
+<div>
+    <label>
+        修改密码：
+        <input type="text" id="oldPassword" placeholder="旧密码"/>
+        <input type="text" id="newPassword" placeholder="新密码"/>
+    </label>
+    <button onclick="change()">修改密码</button>
+</div>
+
 </body>
 </html>
 
 <script>
+    function change() {
+        const oldPassword = document.getElementById("oldPassword").value
+        const newPassword = document.getElementById("newPassword").value
+        const csrf = document.getElementById("_csrf").value
+        axios.post('/mvc/change-password', {
+            oldPassword: oldPassword,
+            newPassword: newPassword,
+            _csrf: csrf
+        }, {
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        }).then(({data}) => {
+            alert(data.success ? "密码修改成功" : "密码修改失败，请检查原密码是否正确")
+        })
+    }
+
     function pay() {
         const account = document.getElementById("account").value
-        axios.post('/mvc/pay', { account: account }, {
+        const _csrf = document.getElementById("_csrf").value
+        axios.post('/mvc/pay', { account: account , _csrf:_csrf}, {
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
             }
