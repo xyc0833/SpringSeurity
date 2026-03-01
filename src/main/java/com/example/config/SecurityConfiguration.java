@@ -78,6 +78,12 @@ public class SecurityConfiguration {
                     conf.logoutSuccessUrl("/login");  //退出登录成功后跳转的地址，这里设置为登录界面
                     conf.permitAll();
                 })
+                //
+                .csrf(conf ->{
+                    conf.disable();
+                    //单行lambda 表达式可以转换为 双冒号的方法引用
+                    //我希望登录和退出 采用这个 csrf其他的暂时不用
+                })
                 .build();
 
     }
