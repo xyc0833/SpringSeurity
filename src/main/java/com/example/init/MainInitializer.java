@@ -1,12 +1,14 @@
-package com.example.config;
+package com.example.init;
 
+import com.example.config.SecurityConfiguration;
+import com.example.config.WebConfiguration;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 public class MainInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
 
     @Override
     protected Class<?>[] getRootConfigClasses() {
-        return new Class[]{WebConfiguration.class};   //基本的Spring配置类，一般用于业务层配置
+        return new Class[]{WebConfiguration.class, SecurityConfiguration.class};   //基本的Spring配置类，一般用于业务层配置
     }
 
     @Override
