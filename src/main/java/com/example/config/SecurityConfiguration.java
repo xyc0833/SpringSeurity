@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.provisioning.UserDetailsManager;
+import org.springframework.security.web.SecurityFilterChain;
 
 import javax.sql.DataSource;
 
@@ -46,22 +48,32 @@ public class SecurityConfiguration {
         return bean;
     }
 
-//    //手动创建一个AuthenticationManager用于处理密码校验  用于原密码的校验
-//    private AuthenticationManager authenticationManager(UserDetailsManager manager,
-//                                                        PasswordEncoder encoder){
-//        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-//        provider.setUserDetailsService(manager);
-//        provider.setPasswordEncoder(encoder);
-//        return new ProviderManager(provider);
-//    }
-//
-//    @Bean
-//    public UserDetailsManager userDetailsService(DataSource dataSource,
-//                                                 PasswordEncoder encoder) throws Exception {
-//        JdbcUserDetailsManager manager = new JdbcUserDetailsManager(dataSource);
-//        //为UserDetailsManager设置AuthenticationManager即可开启重置密码的时的校验
-//        manager.setAuthenticationManager(authenticationManager(manager, encoder));
-//        return manager;
-//    }
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
+        //如果你学习过SpringSecurity 5.X版本，可能会发现新版本的配置方式完全不一样
+        //新版本全部采用lambda形式进行配置，无法再使用之前的and()方法进行连接了
+        return http
+                //以下是验证请求拦截和放行配置
+                //配置页面的拦截规则
+                .authorizeHttpRequests(auth ->{
+                    //针对前端的静态资源 需要放行
+                    //将所有的静态资源放行，一定要添加在全部请求拦截之前
+                    auth.requestMatchers("/static/**").permitAll();
+                    //将所有请求全部拦截，一律需要验证
+                    auth.anyRequest().authenticated();
+                })
+                //以下是表单登录相关配置
+                .formLogin(conf ->{
+                    conf.loginPage("/login");//将登录页设置为我们自己的登录页面
+                    conf.loginProcessingUrl("/doLogin");//登录表单提交的地址，可以自定义
+                    conf.defaultSuccessUrl("/");//登录成功后跳转的页面
+                    conf.permitAll();//全部放行
+                    //将登录相关的地址放行，否则未登录的用户连登录界面都进不去
+                    //用户名和密码的表单字段名称，不过默认就是这个，可以不配置，除非有特殊需求
+
+                })
+                .build();
+
+    }
 
 }
